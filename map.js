@@ -7,6 +7,12 @@ var MODULE = (function() {
       },
       zoom: 6
     };
+  
+  function loadMapScript(key, callback) {
+    var script = document.createElement("script");
+    script.src = "https://maps.googleapis.com/maps/api/js?key=" + key + "&callback=" + callback;
+    document.body.appendChild(script);
+  }
 
   function getMyPosition(map) {
     if(navigator.geolocation) {
@@ -29,14 +35,11 @@ var MODULE = (function() {
   }
 
   function setMarker(map, marker, pos) {
-    if(marker) {
-      marker.position = pos;
-    } else {
       marker = new google.maps.Marker({
         position: pos,
         map: map
       });
-    }
+      return marker;
   }
 
   function initMap(element, pos, zoom) {
@@ -52,12 +55,14 @@ var MODULE = (function() {
   }
 
   return {
-    initMap: initMap
+    initMap: initMap,
+    loadMapScript: loadMapScript
   };
 })();
 
-var api_key = "AIzaSyAo7WxKN7803rymBYr9w-E0FyJeXPHmpE4";
+var api_key = "AIzaSyAo7WxKN7803rymBYr9w-E0FyJeXPHmpE4", map;
+MODULE.loadMapScript(api_key, "init");
 
 function init() {
-  var map = MODULE.initMap(document.getElementById('map'), {lat: 52.22967560, lng: 21.01222870}, 6);
+  map = MODULE.initMap(document.getElementById('map'), {lat: 52.22967560, lng: 21.01222870}, 6);
 }
