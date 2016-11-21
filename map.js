@@ -60,9 +60,10 @@ var MODULE = (function() {
   };
 })();
 
-var api_key = "AIzaSyAo7WxKN7803rymBYr9w-E0FyJeXPHmpE4", map;
+var api_key = "AIzaSyAo7WxKN7803rymBYr9w-E0FyJeXPHmpE4", map, startLocation, destinationLocation;
 MODULE.loadMapScript(api_key, "init");
 
 function init() {
   map = MODULE.initMap(document.getElementById('map'), {lat: 52.22967560, lng: 21.01222870}, 6);
 }
+
