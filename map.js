@@ -13,7 +13,8 @@ var MODULE = (function() {
       destinationLocation,
       myCurrentLocation,
       send,
-      api_key;
+      api_key,
+      my_position = {};
   
   function loadMapScript() {
     var script = document.createElement("script");
@@ -21,16 +22,17 @@ var MODULE = (function() {
     document.body.appendChild(script);
   }
 
-  function getMyPosition(map) {
+  function getMyPosition() {
     if(navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(function(position) {
-        var pos = {
-          lat: position.coords.latitude,
-          lng: position.coords.longitude
-        };
-        map.setCenter(pos);
+        my_position.lat = position.coords.latitude;
+        my_position.lng = position.coords.longitude;
       });
     }
+  }
+
+  function showError() {
+
   }
 
   function getPosition() {
@@ -67,8 +69,13 @@ var MODULE = (function() {
 
       api_key = key;
 
+      bindEvents();
       loadMapScript();
     }
+  }
+
+  function bindEvents() {
+
   }
 
   return {
