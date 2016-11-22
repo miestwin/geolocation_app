@@ -1,16 +1,23 @@
 var MODULE = (function() {
 
-  var map_options = {
-      center: {
-          lat: 52.22967560, 
-          lng: 21.01222870
+  var map,
+      map_options = {
+        center: {
+            lat: 52.22967560, 
+            lng: 21.01222870
+        },
+        zoom: 6
       },
-      zoom: 6
-    };
+      map_container,
+      startLocation, 
+      destinationLocation,
+      myCurrentLocation,
+      send,
+      api_key;
   
-  function loadMapScript(key, callback) {
+  function loadMapScript() {
     var script = document.createElement("script");
-    script.src = "https://maps.googleapis.com/maps/api/js?key=" + key + "&callback=" + callback;
+    script.src = "https://maps.googleapis.com/maps/api/js?key=" + api_key + "&callback=MODULE.initMap";
     document.body.appendChild(script);
   }
 
@@ -42,28 +49,38 @@ var MODULE = (function() {
       return marker;
   }
 
-  function initMap(element, pos, zoom) {
+  function initMap() {
+    map = new google.maps.Map(map_container, map_options);
+  }
 
-    if(arguments.length === 3) {
-      map_options.center = pos;
+  function initModule(container, input1, input2, btn1, btn2, center, zoom, key) {
+    if(arguments.length === 8) {
+
+      map_container = container;
+      startLocation = input1;
+      destinationLocation = input2;
+      myCurrentLocation = btn1;
+      send = btn2;
+
+      map_options.center = center;
       map_options.zoom = zoom;
+
+      api_key = key;
+
+      loadMapScript();
     }
-
-    var map = new google.maps.Map(element, map_options);
-
-    return map;
   }
 
   return {
     initMap: initMap,
-    loadMapScript: loadMapScript
+    initModule: initModule
   };
 })();
 
-var api_key = "AIzaSyAo7WxKN7803rymBYr9w-E0FyJeXPHmpE4", map, startLocation, destinationLocation;
-MODULE.loadMapScript(api_key, "init");
 
-function init() {
-  map = MODULE.initMap(document.getElementById('map'), {lat: 52.22967560, lng: 21.01222870}, 6);
-}
+MODULE.initModule(document.getElementById('map'), document.getElementById("start-location"), 
+  document.getElementById("destination-location"), document.getElementById("my-current-location"), 
+  document.getElementById("send"), {lat: 52.22967560, lng: 21.01222870}, 6, "AIzaSyAo7WxKN7803rymBYr9w-E0FyJeXPHmpE4");
+
+
 
