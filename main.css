@@ -40,7 +40,7 @@ body {
     padding: 20px;
 }
 
-.input {
+.form-group {
     display: flex;
     justify-content: space-between;
 }

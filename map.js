@@ -27,16 +27,45 @@ var MODULE = (function() {
       navigator.geolocation.getCurrentPosition(function(position) {
         my_position.lat = position.coords.latitude;
         my_position.lng = position.coords.longitude;
+        fetch("https://maps.googleapis.com/maps/api/geocode/json?latlng=" + my_position.lat + "," + my_position.lng + "&key=" + api_key)
+      .then(handleErrors).then(parseJSON).then(function(response) {
+        if(response.status === "OK") {
+          startLocation.value = response.results[0].formatted_address;
+        }
+      }).catch(function(error) {
+        throw new Error("Request failed: " + error);
+      });
       });
     }
+  }
+
+  function parseJSON(response) {
+    return response.json();
+  }
+
+  function handleErrors(response) {
+    if(!response.ok) {
+      throw new Error("Request failed: " + response.statusText);
+    }
+    return response;
   }
 
   function showError() {
 
   }
 
-  function getPosition() {
-
+//do wywalenia
+  function setPosition() {
+    getMyPosition();
+    console.log(my_position.lat + " " + my_position.lng);
+    fetch("https://maps.googleapis.com/maps/api/geocode/json?latlng=" + my_position.lat + "," + my_position.lng + "&key=" + api_key)
+      .then(handleErrors).then(parseJSON).then(function(response) {
+        if(response.status === "OK") {
+          startLocation.value = response.results[0].formatted_address;
+        }
+      }).catch(function(error) {
+        throw new Error("Request failed: " + error);
+      });
   }
 
   function draw() {
@@ -69,13 +98,16 @@ var MODULE = (function() {
 
       api_key = key;
 
-      bindEvents();
       loadMapScript();
+      bindEvents();
     }
   }
 
   function bindEvents() {
-
+    myCurrentLocation.addEventListener("click", function(event) {
+      event.preventDefault();
+      getMyPosition();
+    });
   }
 
   return {
@@ -85,7 +117,7 @@ var MODULE = (function() {
 })();
 
 
-MODULE.initModule(document.getElementById('map'), document.getElementById("start-location"), 
+MODULE.initModule(document.getElementById('map'), document.getElementById("current-location"), 
   document.getElementById("destination-location"), document.getElementById("my-current-location"), 
   document.getElementById("send"), {lat: 52.22967560, lng: 21.01222870}, 6, "AIzaSyAo7WxKN7803rymBYr9w-E0FyJeXPHmpE4");
 
