@@ -14,7 +14,10 @@ var MODULE = (function() {
       myCurrentLocation,
       send,
       api_key,
-      my_position = {};
+      my_position = {},
+      my_destination = {},
+      my_marker,
+      desitnation_marker;
   
   function loadMapScript() {
     var script = document.createElement("script");
@@ -28,13 +31,14 @@ var MODULE = (function() {
         my_position.lat = position.coords.latitude;
         my_position.lng = position.coords.longitude;
         fetch("https://maps.googleapis.com/maps/api/geocode/json?latlng=" + my_position.lat + "," + my_position.lng + "&key=" + api_key)
-      .then(handleErrors).then(parseJSON).then(function(response) {
-        if(response.status === "OK") {
-          startLocation.value = response.results[0].formatted_address;
-        }
-      }).catch(function(error) {
-        throw new Error("Request failed: " + error);
-      });
+        .then(handleErrors).then(parseJSON).then(function(response) {
+          if(response.status === "OK") {
+            startLocation.value = response.results[0].formatted_address;
+            //my_marker = setMarker(my_marker, my_position, response.results[0].formatted_address);
+          }
+        }).catch(function(error) {
+          throw new Error("Request failed: " + error);
+        });
       });
     }
   }
@@ -51,31 +55,46 @@ var MODULE = (function() {
   }
 
   function showError() {
-
-  }
-
-//do wywalenia
-  function setPosition() {
-    getMyPosition();
-    console.log(my_position.lat + " " + my_position.lng);
-    fetch("https://maps.googleapis.com/maps/api/geocode/json?latlng=" + my_position.lat + "," + my_position.lng + "&key=" + api_key)
-      .then(handleErrors).then(parseJSON).then(function(response) {
-        if(response.status === "OK") {
-          startLocation.value = response.results[0].formatted_address;
-        }
-      }).catch(function(error) {
-        throw new Error("Request failed: " + error);
-      });
+    //TODO pokaż błąd geolokacji
   }
 
   function draw() {
-    
+    //TODO rysuj ścieżkę
   }
 
-  function setMarker(map, marker, pos) {
+  function fetchData() {
+      var start = startLocation.value.trim().split(' ').join('+'); 
+      var end = destinationLocation.value.trim().split(' ').join('+');
+      
+      fetch("https://maps.googleapis.com/maps/api/geocode/json?address=" + start + "&api_key=" + api_key)
+        .then(handleErrors).then(parseJSON).then(function(response) {
+          if(response.status === "OK") {
+            my_position.lat = response.results[0].geometry.location.lat;
+            my_position.lng = response.results[0].geometry.location.lng;
+            my_marker = setMarker(my_marker, my_position, response.results[0].formatted_address);
+          }
+        }).catch(function(error) {
+          throw new Error("Request failed: " + error);
+        });
+
+        fetch("https://maps.googleapis.com/maps/api/geocode/json?address=" + end + "&api_key=" + api_key)
+        .then(handleErrors).then(parseJSON).then(function(response) {
+          if(response.status === "OK") {
+            my_destination.lat = response.results[0].geometry.location.lat;
+            my_destination.lng = response.results[0].geometry.location.lng;
+            desitnation_marker = setMarker(desitnation_marker, my_destination, response.results[0].formatted_address);
+          }
+        }).catch(function(error) {
+          throw new Error("Request failed: " + error);
+        });
+  }
+
+  function setMarker(marker, pos, title) {
       marker = new google.maps.Marker({
         position: pos,
-        map: map
+        map: map,
+        title: title,
+        animation: google.maps.Animation.DROP
       });
       return marker;
   }
@@ -108,6 +127,11 @@ var MODULE = (function() {
       event.preventDefault();
       getMyPosition();
     });
+
+    send.addEventListener("click", function(event) {
+      event.preventDefault();
+      fetchData();
+    })
   }
 
   return {
