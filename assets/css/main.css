@@ -10,7 +10,7 @@
 
 html {
     font-family: 'Roboto', sans-serif;
-    font-size: 20px;
+    font-size: 15px;
 }
 
 body {
@@ -23,35 +23,49 @@ body {
 
 #container {
     width: 90%;
-    height: 60%;
+    height: 70%;
     display: flex;
     flex-direction: column;
     border-radius: 8px;
-    box-shadow: 0 0 8px 3px rgba(0, 0, 0, 0.6);
+    box-shadow: 0 0 10px 3px rgba(0, 0, 0, 0.6);
 }
 
 #form-container {
-    background-color: #cc0066;
+    background-color: #515184;
     border-radius: 8px 8px 0 0;
-    color: #fff;
 }
 
-#myform {
+form {
     display: flex;
-    flex-wrap: wrap;
-    padding: 20px;
+    flex-direction: column;
+    align-items: center;
 }
 
 .form-group {
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
+    align-items: center;
+}
+
+label {
+    color: #fff;
+    font-size: 1.2rem;
+    margin: 0.5rem;
 }
 
 input[type="text"] {
-    border-radius: 8px;
-    font-size: 0.8rem;
     padding: 5px;
+    border-radius: 5px;
+    min-width: 250px;
+    text-align: center;
 }
+
+button {
+    padding: 5px;
+    border-radius: 5px;
+    margin: 0.5rem;
+}
+
 
 #map {
     flex: 1;
@@ -60,4 +74,18 @@ input[type="text"] {
 
 #error {
     color: #f00;
+    text-align: center;
+}
+
+@media (min-width: 700px) {
+    .form-group {
+        flex-direction: row;
+    }
+}
+
+@media (min-width: 1050px) {
+    form {
+        flex-direction: row;
+        justify-content: center;
+    }
 }

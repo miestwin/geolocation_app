@@ -76,12 +76,16 @@ var MODULE = (function() {
       var start = startLocation.value.trim().split(' ').join('+'); 
       var end = destinationLocation.value.trim().split(' ').join('+');
 
-      fetchData(start, 0);
-      fetchData(end, 1);
+      if(start !== "" && end !== "") {
+        fetchData(start, 0);
+        fetchData(end, 1);
 
-      setPath(start, end);
-      
-      error_container.textContent = "";
+        setPath(start, end);
+
+        error_container.textContent = "";
+      } else {
+        error_container.textContent = "You must get start and destination location.";
+      }
   }
 
   function fetchData(location, markerIndex) {
