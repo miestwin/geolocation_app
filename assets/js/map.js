@@ -179,7 +179,7 @@ var MODULE = (function() {
 
 MODULE.initModule(document.getElementById('map'), document.getElementById("start-location"), 
   document.getElementById("destination-location"), document.getElementById("my-current-location"), 
-  document.getElementById("send"), document.getElementById("error"), {lat: 52.22967560, lng: 21.01222870}, 6, "AIzaSyAo7WxKN7803rymBYr9w-E0FyJeXPHmpE4");
+  document.getElementById("send"), document.getElementById("error"), {lat: 52.22967560, lng: 21.01222870}, 6, "YOUR API KEY HERE");
 
 
 
