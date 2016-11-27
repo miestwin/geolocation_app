@@ -17,7 +17,9 @@ var MODULE = (function() {
       my_position = {},
       my_destination = {},
       my_marker,
-      desitnation_marker;
+      desitnation_marker,
+      directionsService,
+      directionsDisplay;
   
   function loadMapScript() {
     var script = document.createElement("script");
@@ -34,7 +36,6 @@ var MODULE = (function() {
         .then(handleErrors).then(parseJSON).then(function(response) {
           if(response.status === "OK") {
             startLocation.value = response.results[0].formatted_address;
-            //my_marker = setMarker(my_marker, my_position, response.results[0].formatted_address);
           }
         }).catch(function(error) {
           throw new Error("Request failed: " + error);
@@ -58,10 +59,6 @@ var MODULE = (function() {
     //TODO pokaż błąd geolokacji
   }
 
-  function draw() {
-    //TODO rysuj ścieżkę
-  }
-
   function fetchData() {
       var start = startLocation.value.trim().split(' ').join('+'); 
       var end = destinationLocation.value.trim().split(' ').join('+');
@@ -71,6 +68,7 @@ var MODULE = (function() {
           if(response.status === "OK") {
             my_position.lat = response.results[0].geometry.location.lat;
             my_position.lng = response.results[0].geometry.location.lng;
+            start = response.results[0].formatted_address;
             my_marker = setMarker(my_marker, my_position, response.results[0].formatted_address);
           }
         }).catch(function(error) {
@@ -82,14 +80,38 @@ var MODULE = (function() {
           if(response.status === "OK") {
             my_destination.lat = response.results[0].geometry.location.lat;
             my_destination.lng = response.results[0].geometry.location.lng;
+            end = response.results[0].formatted_address;
             desitnation_marker = setMarker(desitnation_marker, my_destination, response.results[0].formatted_address);
           }
         }).catch(function(error) {
           throw new Error("Request failed: " + error);
         });
+
+        setPath(start, end);
+  }
+
+  function setPath(start, end) {
+    if(directionsService) {
+      directionsDisplay.setMap(null);
+    }
+    directionsService = new google.maps.DirectionsService;
+    directionsDisplay = new google.maps.DirectionsRenderer({map: map});
+
+    directionsService.route({
+      origin: start,
+      destination: end,
+      travelMode: 'DRIVING'
+    }, function(response, status) {
+        if(status === "OK") {
+          directionsDisplay.setDirections(response);
+      }
+    });
   }
 
   function setMarker(marker, pos, title) {
+      if(marker) {
+        marker.setMap(null);
+      }
       marker = new google.maps.Marker({
         position: pos,
         map: map,
