@@ -4,11 +4,13 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    border: none;
+    outline: none;
 }
 
 html {
     font-family: 'Roboto', sans-serif;
-    font-size: 15px;
+    font-size: 20px;
 }
 
 body {
@@ -45,7 +47,17 @@ body {
     justify-content: space-between;
 }
 
+input[type="text"] {
+    border-radius: 8px;
+    font-size: 0.8rem;
+    padding: 5px;
+}
+
 #map {
     flex: 1;
     border-radius: 0 0 8px 8px;
+}
+
+#error {
+    color: #f00;
 }
